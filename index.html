@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aroma & Code — Specialty Coffee Roasters</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ========================================================
+       ANTIPATRÓN 5: Barra de lectura manejada con scroll listener en JS
+       (Mejorable con: CSS Scroll-Driven Animations sin JS)
+       ======================================================== -->
+  <div id="scrollProgressBar" class="scroll-progress-bar"></div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="#" class="brand-logo">
+        <span class="logo-icon">☕</span>
+        <span class="logo-text">Aroma &amp; Code</span>
+      </a>
+      <nav class="main-nav">
+        <a href="#catalogo" class="nav-link active">Catálogo</a>
+        <a href="#suscripcion" class="nav-link">Suscripción</a>
+      </nav>
+      <!-- Botón que abre el modal de carrito usando librería MicroModal -->
+      <button class="cart-btn" data-micromodal-trigger="cartModal">
+        🛒 Carrito (<span id="cartCount">0</span>)
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================
+       ANTIPATRÓN 1 (LCP): Imagen Hero con lazy loading y sin fetchpriority
+       (Mejorable con: fetchpriority="high", decoding="async", eliminando loading="lazy")
+       ======================================================== -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <span class="badge">Cosecha 2026 Direct Trade</span>
+      <h1 class="hero-title">El arte del café de origen, tostado con precisión.</h1>
+      <p class="hero-subtitle">
+        Seleccionamos granos de altura con perfiles sensoriales únicos. Desde notas florales de Etiopía hasta chocolates densos de Colombia.
+      </p>
+      <div class="hero-actions">
+        <a href="#catalogo" class="btn btn-primary">Explorar Varietales</a>
+      </div>
+    </div>
+    <div class="hero-media">
+      <!-- ANTIPATRÓN: loading="lazy" retrasa LCP de la imagen principal y falta fetchpriority="high" -->
+      <img
+        src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=80"
+        alt="Barista preparando café de filtro"
+        class="hero-image"
+        loading="lazy"
+        id="heroImage"
+      >
+    </div>
+  </section>
+
+  <!-- Filtros de categoría -->
+  <section id="catalogo" class="catalog-section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Nuestra Selección de Granos</h2>
+        <p class="section-subtitle">Tostados semanalmente en microlotes artesanales</p>
+      </div>
+
+      <!-- ========================================================
+           ANTIPATRÓN 6: Filtros que cambian el DOM bruscamente sin View Transitions
+           (Mejorable con: document.startViewTransition)
+           ======================================================== -->
+      <div class="category-filters" id="categoryFilters">
+        <button class="filter-btn active" data-category="all">Todos</button>
+        <button class="filter-btn" data-category="origen">Origen Único</button>
+        <button class="filter-btn" data-category="blend">Blends de Autor</button>
+        <button class="filter-btn" data-category="coldbrew">Edición Fría</button>
+      </div>
+    </div>
+
+    <!-- ========================================================
+         DEPENDENCIA INNECESARIA 2: 'aos' (Animate On Scroll) para animar tarjetas
+         ANTIPATRÓN 2: products-grid y cards SIN content-visibility: auto
+         ANTIPATRÓN 7: Dependiente de media queries en lugar de @container
+         (Mejorable con: CSS Scroll-Driven Animations nativas + content-visibility + @container)
+         ======================================================== -->
+    <div class="products-grid" id="productsGrid">
+      <!-- Renderizado vía app.js usando atributos data-aos="fade-up" -->
+    </div>
+  </section>
+
+  <!-- Sección de Suscripción / Formulario -->
+  <section id="suscripcion" class="subscription-section">
+    <div class="subscription-card">
+      <div class="subscription-info">
+        <h3>Club de Café Mensual</h3>
+        <p>Recibe granos frescos en tu puerta cada 15 o 30 días con tueste recién empacado.</p>
+        <ul class="perks-list">
+          <li>✓ Envío prioritario gratis</li>
+          <li>✓ Fichas de cata exclusivas</li>
+          <li>✓ Acceso a microlotes experimentales</li>
+        </ul>
+      </div>
+
+      <!-- ========================================================
+           DEPENDENCIA INNECESARIA 4: 'just-validate' para validar el formulario en JS
+           (Mejorable con: CSS :user-valid, :user-invalid, :has() y Constraint Validation nativo)
+           ======================================================== -->
+      <form class="subscription-form" id="subscriptionForm" novalidate>
+        <h4>Suscríbete al Club</h4>
+
+        <div class="form-group">
+          <label for="subscriberName">Nombre Completo</label>
+          <input type="text" id="subscriberName" name="name" placeholder="Ej: Carlos Bregante" required minlength="3">
+        </div>
+
+        <div class="form-group">
+          <label for="subscriberEmail">Correo Electrónico</label>
+          <input type="email" id="subscriberEmail" name="email" placeholder="carlos@ejemplo.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="frequencySelect">Frecuencia de entrega</label>
+          <select id="frequencySelect" name="frequency" required>
+            <option value="">Selecciona una frecuencia...</option>
+            <option value="biweekly">Cada 15 días (Recomendado)</option>
+            <option value="monthly">Mensual</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Confirmar Suscripción</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       DEPENDENCIA INNECESARIA 3: 'micromodal' para modales
+       (Mejorable con: elemento nativo <dialog> con .showModal() y ::backdrop)
+       ======================================================== -->
+
+  <!-- Modal Detalle de Producto -->
+  <div class="modal micromodal-slide" id="productDetailModal" aria-hidden="true">
+    <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+      <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modalProductTitle">
+        <header class="modal__header">
+          <button class="modal__close" aria-label="Cerrar modal" data-micromodal-close></button>
+        </header>
+        <main class="modal__content" id="modalProductBody">
+          <!-- Contenido dinámico del producto -->
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Carrito -->
+  <div class="modal micromodal-slide" id="cartModal" aria-hidden="true">
+    <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+      <div class="modal__container cart-modal-container" role="dialog" aria-modal="true" aria-labelledby="cartModalTitle">
+        <header class="modal__header">
+          <h3 class="modal__title" id="cartModalTitle">Tu Carrito</h3>
+          <button class="modal__close" aria-label="Cerrar modal" data-micromodal-close></button>
+        </header>
+        <main class="modal__content">
+          <div class="cart-items-list" id="cartItemsList">
+            <p class="empty-cart-msg">Tu carrito está vacío.</p>
+          </div>
+          <div class="cart-footer">
+            <div class="cart-total">Total: <strong id="cartTotalSum">$0.00</strong></div>
+            <button class="btn btn-primary btn-block" id="checkoutBtn">Proceder al Pago</button>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       DEPENDENCIA INNECESARIA 1: '@floating-ui/dom' para calcular posición del tooltip
+       (Mejorable con: Popover API nativo + CSS Anchor Positioning)
+       ======================================================== -->
+  <div id="floatingTooltip" class="floating-tooltip" role="tooltip">
+    <div class="tooltip-content" id="floatingTooltipText">Notas sensoriales</div>
+    <div id="tooltipArrow" class="tooltip-arrow"></div>
+  </div>
+
+  <footer class="site-footer">
+    <p>© 2026 Aroma &amp; Code Roasters — Base con dependencias para Modern Web Guidance</p>
+  </footer>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
